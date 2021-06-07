@@ -1,0 +1,9 @@
+/static/
+/static_dev/
+/media/
+/mainapp/migrations/
+/db.sqlite3
+/manage.py
+/TradeSite/
+/mainapp/__init__.py
+/mainapp/tests.py
