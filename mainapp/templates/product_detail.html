@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock header %}
+
+{% block content %}
+<div class="row gx-4 gx-lg-5 align-items-center">
+    <div class="col-md-6"><img alt="{{ product.title }} - image" class="card-img-top mb-5 mb-md-0"
+                               src="{{ product.image.url }}"></div>
+    <div class="col-md-6">
+        <nav aria-label="breadcrumb" class="mt-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'base' %}">Main</a></li>
+                <li class="breadcrumb-item"><a href="#">{{ product.category.name }}</a></li>
+                <li aria-current="page" class="breadcrumb-item active">{{ product.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="small mb-1"> {{ product.slug }}</div>
+        <h1 class="display-5 fw-bolder">{{ product.title }}</h1>
+        <div class="fs-5 mb-5">
+            <!--
+            TODO if offer
+            <span class="text-decoration-line-through">$45.00</span>
+            -->
+            <span>{{ product.price}}</span>
+        </div>
+        <p class="lead">{{ product.description }}</p>
+        <div class="d-flex">
+            <input class="form-control text-center me-3" id="inputQuantity" style="max-width: 3rem" type="num"
+                   value="1">
+            <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                <i class="bi-cart-fill me-1"></i>
+                Add to cart
+            </button>
+        </div>
+    </div>
+    <div class="col-md-12 mt-5">
+        <h3 class="fw-bolder">Specifications</h3>
+        {% if product.category.slug == 'notebooks' %}
+        {% include 'notebook_specification.html' %}
+        {% endif %}
+        {% if product.category.slug == 'smartphones' %}
+        {% include 'smartphone_specification.html' %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}
