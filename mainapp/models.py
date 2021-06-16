@@ -1,9 +1,22 @@
+import sys
+from io import BytesIO
+
+from PIL import Image
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 
 User = get_user_model()
+
+
+class MinResolutionError(Exception):
+    pass
+
+
+class MaxResolutionError(Exception):
+    pass
 
 
 class LatestProductsManager:
@@ -39,6 +52,10 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    MIN_RESOLUTION = (400, 400)
+    MAX_RESOLUTION = (800, 800)
+    MAX_IMAGE_SIZE = 3145728  # 3 Mb in bytes
+
     class Meta:
         abstract = True
 
@@ -51,6 +68,28 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        image_data = self.image
+        img = Image.open(image_data)
+        min_w, min_h = self.MIN_RESOLUTION
+        max_w, max_h = self.MAX_RESOLUTION
+        if img.width < min_w or img.height < min_h:
+            raise MinResolutionError('Изображение имеет разрешение меньше допустимого')
+
+        new_img = img.convert('RGB')
+        if img.width > max_w or img.height > max_h:
+            new_img = new_img.resize(self.MAX_RESOLUTION, Image.ANTIALIAS)
+            filestream = BytesIO()
+            new_img.save(filestream, 'JPEG', quality=90)
+            filestream.seek(0)
+            print(self.image.name)
+            name = '{}.{}'.format(*self.image.name.split('.'))
+            print(name)
+            self.image = InMemoryUploadedFile(
+                filestream, 'ImageField', name, 'jpeg/image', sys.getsizeof(filestream), None
+            )
+        super().save(*args, **kwargs)
 
 
 class Notebook(Product):
