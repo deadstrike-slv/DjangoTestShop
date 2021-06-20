@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load specifications %}
 {% block header %}
 {% endblock header %}
 
@@ -37,12 +37,9 @@
     </div>
     <div class="col-md-12 mt-5">
         <h3 class="fw-bolder">Specifications</h3>
-        {% if product.category.slug == 'notebooks' %}
-        {% include 'notebook_specification.html' %}
-        {% endif %}
-        {% if product.category.slug == 'smartphones' %}
-        {% include 'smartphone_specification.html' %}
-        {% endif %}
+
+        {{ product | product_spec}}
+
     </div>
 </div>
 
