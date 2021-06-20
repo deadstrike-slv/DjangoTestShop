@@ -29,10 +29,11 @@
         <div class="d-flex">
             <input class="form-control text-center me-3" id="inputQuantity" style="max-width: 3rem" type="num"
                    value="1">
-            <button class="btn btn-outline-dark flex-shrink-0" type="button">
+            <a class="btn btn-outline-dark flex-shrink-0"
+               href="{% url 'add-to-cart' ct_model=ct_model slug=product.slug %}">
                 <i class="bi-cart-fill me-1"></i>
                 Add to cart
-            </button>
+            </a>
         </div>
     </div>
     <div class="col-md-12 mt-5">
